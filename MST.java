@@ -34,9 +34,13 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		int distance;
 		Vertex vertex;
 		
+		MSTVertex parentMST;
+		int rank;
+		
 		MSTVertex(Vertex u) {
 			seen = false;
 			parent = null;
+			parentMST = null;
 			distance = Integer.MAX_VALUE;
 			vertex = u;
 		}
@@ -46,6 +50,8 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		}
 
 		public MSTVertex make(Vertex u) {
+			parentMST = this;
+			rank = 0;
 			return new MSTVertex(u);
 		}
 
@@ -67,24 +73,114 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 				return -1;
 			}
 		}
+		
+		// --------------------------- Kruskal -------------------------------
+		public MSTVertex find() {
+			if (!this.equals(parentMST)) {
+				parentMST = parentMST.find();
+			}
+			return parentMST;
+		}
+		
+		public void union(MSTVertex rv) {
+			if (rv.rank < this.rank) {
+				rv.parentMST = this;
+			}
+			else if (this.rank < rv.rank) {
+				this.parentMST = rv;
+			}
+			else {
+				this.rank++;
+				rv.parentMST = this;
+			}
+		}
 	}
-
+	
+	/**
+	 * Kruskal's MST Algorithm using disjoint set data structure 
+	 * with union()-and-find() operations.
+	 * 
+	 * @return the total weight of the Minimum Spanning Tree.
+	 */
 	public long kruskal() {
 		algorithm = "Kruskal";
 		Edge[] edgeArray = g.getEdgeArray();
 		mst = new LinkedList<>();
 		wmst = 0;
+		
+		for (Vertex u : g) {
+			get(u).make(u);
+		}
+		
+		Arrays.sort(edgeArray);
+		
+		for (Edge e : edgeArray) {
+			MSTVertex ru = get(e.fromVertex()).find();
+			MSTVertex rv = get(e.toVertex()).find();
+			
+			if (!ru.equals(rv)) {
+				mst.add(e);
+				wmst += e.getWeight();
+				ru.union(rv);
+			}
+		}
+		
 		return wmst;
 	}
-
-	public long prim3(Vertex s) {
+	
+	/**
+	 * Prim's MST Algorithm - Take 3: using Indexed heap
+	 * 
+	 * @param s source vertex
+	 * @return the total weight of the Minimum Spanning Tree.
+	 * @throws Exception
+	 */
+	public long prim3(Vertex s) throws Exception {
 		algorithm = "indexed heaps";
 		mst = new LinkedList<>();
 		wmst = 0;
 		IndexedHeap<MSTVertex> q = new IndexedHeap<>(g.size());
+		
+		for (Vertex u : g) {
+			get(u).seen = false;
+			get(u).parent = null;
+			get(u).distance = Integer.MAX_VALUE;
+			get(u).vertex = u;
+		}
+		get(s).distance = 0;
+		
+		for (Vertex u : g) {
+			q.add(get(u));
+		}
+		while (!q.isEmpty()) {
+			MSTVertex u = q.remove();
+			u.seen =  true;
+			wmst += u.distance;
+			Vertex uImage = u.vertex;
+			
+			for (Edge e : g.incident(uImage)) {
+				Vertex v = e.otherEnd(uImage);
+				
+				if (!get(v).seen && (e.getWeight() < get(v).distance)) {
+					get(v).distance = e.getWeight();
+					get(v).parent = uImage; // or u? as MSTVertex
+					q.decreaseKey(get(v)); 
+					// Need to call percolateUp(index of v in q). 
+					// How do we find it? No idea! :(
+				}
+			}
+		}
+		
 		return wmst;
 	}
-
+	
+	/**
+	 * Prim's MST Algorithm - Take 2: using Priority Queue of Vertices.
+	 * Duplicates are allowed.
+	 * 
+	 * @param s the source vertex
+	 * @return the total weight of the Minimum Spanning Tree.
+	 */
 	public long prim2(Vertex s) {
 		algorithm = "PriorityQueue<Vertex>";
 		mst = new LinkedList<>();
@@ -119,7 +215,13 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		
 		return wmst;
 	}
-
+	
+	/**
+	 * Prim's MST Algorithm - Take 1: using Priority Queue of Edges.
+	 * 
+	 * @param s the source vertex
+	 * @return the total weight of the Minimum Spanning Tree.
+	 */
 	public long prim1(Vertex s) {
 		algorithm = "PriorityQueue<Edge>";
 		mst = new LinkedList<>();
@@ -155,7 +257,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		return wmst;
 	}
 
-	public static MST mst(Graph g, Vertex s, int choice) {
+	public static MST mst(Graph g, Vertex s, int choice) throws Exception {
 		MST m = new MST(g);
 		switch (choice) {
 		case 0:
@@ -174,7 +276,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		return m;
 	}
 
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws Exception {
 		Scanner in;
 		int choice = 0; // Kruskal
 		if (args.length == 0 || args[0].equals("-")) {

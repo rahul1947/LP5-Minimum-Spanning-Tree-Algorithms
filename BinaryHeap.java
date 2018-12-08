@@ -13,45 +13,98 @@ import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
 
 public class BinaryHeap<T extends Comparable<? super T>> {
-	Comparable[] pq;
-	int size;
-
-	// Constructor for building an empty priority queue using natural ordering of T
+	Comparable[] pq; // Priority Queue
+	int capacity; // maximum size of Priority Queue
+	int size; // current size of Priority Queue
+	
+	// Constructor for building an empty priority queue 
+	// using natural ordering of T
 	public BinaryHeap(int maxCapacity) {
-		pq = new Comparable[maxCapacity];
+		capacity = maxCapacity;
+		pq = new Comparable[capacity];
 		size = 0;
 	}
 
-	// add method: resize pq if needed
-	public boolean add(T x) {
+	/**
+	 * Add element to the priority queue, throw exception if it is full
+	 * @param x the element to be added
+	 * @throws Exception when pq is full
+	 */
+	public boolean add(T x) throws Exception {
+		boolean result = offer(x);
+		
+		if (!result) {
+			throw new Exception("Queue is full.\n");
+		}
 		return true;
 	}
-
+	
+	/**
+	 * Offer(add) a number x, return false if pq is full
+	 * @param x the number to be offered
+	 * @return isOffered? true when added, else false
+	 */
 	public boolean offer(T x) {
-		return add(x);
+		if (size == pq.length) {
+			return false;
+		} 
+		else {
+			pq[size] = x; // Adding to the leaf
+			percolateUp(size); // Moving to the appropriate place
+			size++;
+			return true;
+		}
 	}
 
-	// throw exception if pq is empty
+	/**
+	 * Removes an element from the pq.
+	 * @return the element that was removed
+	 * @throws NoSuchElementException when pq is empty
+	 */
 	public T remove() throws NoSuchElementException {
 		T result = poll();
+		
 		if (result == null) {
-			throw new NoSuchElementException("Priority queue is empty");
+			throw new NoSuchElementException("Priority queue is empty.\n");
 		} else {
 			return result;
 		}
 	}
 
-	// return null if pq is empty
+	/**
+	 * Polls (or removes) the element.
+	 * @return T the element that was removed, null when PQ is empty
+	 */
+	//@SuppressWarnings("unchecked")
 	public T poll() {
-		return null;
+		if (size == 0) {
+			return null;
+		} 
+		else {
+			// The first element which is to be removed
+			Comparable<? super T> temp = pq[0]; 
+			pq[0] = pq[size - 1];
+			size--;
+			// Moving newly added element to appropriate place
+			percolateDown(0); 
+			return (T) temp;
+		}
 	}
-
+	
+	// The top element of the heap.
 	public T min() {
 		return peek();
 	}
 
-	// return null if pq is empty
+	/**
+	 * Sees the top element of the heap (or head of the queue).
+	 * @return the first element of queue, null if PQ is empty
+	 */
+	//@SuppressWarnings("unchecked")
 	public T peek() {
+		if (0 < size) {
+			return (T) pq[0];
+		}
 		return null;
 	}
 
@@ -63,23 +116,65 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 		return 2 * i + 1;
 	}
 
-	/** pq[index] may violate heap order with parent */
+	
+	/**
+	 * Move the element[index] up in the heap, at it's appropriate place.
+	 * 
+	 * @param index the index to be moved up in the heap.
+	 */
+	//@SuppressWarnings("unchecked")
 	void percolateUp(int index) {
+		Comparable<? super T> x = pq[index];
+		
+		//pq[index] may violate heap order with parent***
+		while (index > 0 && (pq[parent(index)].compareTo(x) > 0)) {
+			pq[index] = pq[parent(index)];
+			index = parent(index);
+		}		
+		pq[index] = x;
 	}
 
-	/** pq[index] may violate heap order with children */
+	/**
+	 * Move the element[index] down in the heap, at it's appropriate place. 
+	 * 
+	 * @param index the index to be moved down in the heap.
+	 */
+	//@SuppressWarnings("unchecked")
 	void percolateDown(int index) {
+		Comparable<? super T> x = pq[index];
+		int c = leftChild(index); // (2 * index) + 1;
+		
+		// pq[i] may violate heap order with children***
+		while (c <= size - 1) {
+			if (c < size - 1 && (pq[c].compareTo(pq[c + 1]) > 0))
+				c = c + 1;
+			if (x.compareTo((T) pq[c]) <= 0)
+				break;
+			pq[index] = pq[c];
+			index = c;
+			c = leftChild(index); // 2 * index + 1;
+		}
+		pq[index] = x;
 	}
-
+	
+	/**
+	 * Assigns x to pq[dest]. Indexed Heap will override this method.
+	 * @param dest the index where x is to be assigned.
+	 * @param x the element to be assigned.
+	 */
 	void move(int dest, Comparable x) {
 		pq[dest] = x;
 	}
-
+	
+	// why?
 	int compare(Comparable a, Comparable b) {
 		return ((T) a).compareTo((T) b);
 	}
 
-	/** Create a heap. Precondition: none. */
+	/** 
+	 * Create a heap. 
+	 * Precondition: none. 
+	 */
 	void buildHeap() {
 		for (int i = parent(size - 1); i >= 0; i--) {
 			percolateDown(i);
@@ -89,13 +184,24 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	public boolean isEmpty() {
 		return size() == 0;
 	}
-
+	
+	// no if elements in the heap.
 	public int size() {
 		return size;
 	}
 
-	// Resize array to double the current size
+	/**
+	 * Resize array to double the current size
+	 * NOTE: Might fail when contiguous memory available < memory used for PQ
+	 */
 	void resize() {
+		Comparable[] newPQ = new Comparable[capacity * 2];
+		// copying existing elements
+		for (int i = 0; i < size; i++) {
+			newPQ[i] = pq[i];
+		}
+		capacity = capacity * 2;
+		pq = newPQ;
 	}
 
 	public interface Index {
@@ -112,6 +218,7 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 
 		/** restore heap order property after the priority of x has decreased */
 		void decreaseKey(T x) {
+			
 		}
 
 		@Override
@@ -122,7 +229,7 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 
 	public static void main(String[] args) {
 		Integer[] arr = { 0, 9, 7, 5, 3, 1, 8, 6, 4, 2 };
-		BinaryHeap<Integer> h = new BinaryHeap(arr.length);
+		BinaryHeap<Integer> h = new BinaryHeap<Integer>(arr.length);
 
 		System.out.print("Before:");
 		for (Integer x : arr) {
