@@ -1,22 +1,20 @@
 package rsn170330.lp5;
 
-import rbk.Graph.Vertex;
+import rsn170330.lp5.BinaryHeap.Index;
+import rsn170330.lp5.BinaryHeap.IndexedHeap;
+
 import rbk.Graph;
+import rbk.Graph.Vertex;
 import rbk.Graph.Edge;
 import rbk.Graph.GraphAlgorithm;
 import rbk.Graph.Factory;
 import rbk.Graph.Timer;
 
-import rsn170330.lp5.BinaryHeap.Index;
-import rsn170330.lp5.BinaryHeap.IndexedHeap;
-
 import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.Scanner;
-import java.util.Comparator;
 import java.util.List;
 import java.util.LinkedList;
-import java.io.FileNotFoundException;
 import java.io.File;
 
 public class MST extends GraphAlgorithm<MST.MSTVertex> {
@@ -34,8 +32,11 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		int distance;
 		Vertex vertex;
 		
+		int thisIndex; // prim3: index of the node in the Priority Queue
+		
 		MSTVertex parentMST;
 		int rank;
+		
 		
 		MSTVertex(Vertex u) {
 			seen = false;
@@ -54,12 +55,15 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 			rank = 0;
 			return new MSTVertex(u);
 		}
-
+		
+		// prim3
 		public void putIndex(int index) {
+			thisIndex = index;
 		}
-
+		
+		// prim3
 		public int getIndex() {
-			return 0;
+			return thisIndex;
 		}
 
 		public int compareTo(MSTVertex other) {
@@ -130,6 +134,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	
 	/**
 	 * Prim's MST Algorithm - Take 3: using Indexed heap
+	 * NOTE: best Prim Algorithm for dense graphs.
 	 * 
 	 * @param s source vertex
 	 * @return the total weight of the Minimum Spanning Tree.
@@ -146,6 +151,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 			get(u).parent = null;
 			get(u).distance = Integer.MAX_VALUE;
 			get(u).vertex = u;
+			get(u).putIndex(u.getIndex());
 		}
 		get(s).distance = 0;
 		
@@ -155,7 +161,8 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		while (!q.isEmpty()) {
 			MSTVertex u = q.remove();
 			u.seen =  true;
-			wmst += u.distance;
+			wmst += u.distance; // u.distance = weight of the smallest edge 
+			// that connects mst to this edge
 			Vertex uImage = u.vertex;
 			
 			for (Edge e : g.incident(uImage)) {
@@ -204,6 +211,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 				
 				for (Edge e : g.incident(uImage)) {
 					Vertex v = e.otherEnd(uImage);
+					
 					if (!get(v).seen && e.getWeight() < get(v).distance) {
 						get(v).distance = e.getWeight();
 						get(v).parent = uImage;
@@ -218,6 +226,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	
 	/**
 	 * Prim's MST Algorithm - Take 1: using Priority Queue of Edges.
+	 * NOTE: For sparse graphs, prefer take 1 over take 3.
 	 * 
 	 * @param s the source vertex
 	 * @return the total weight of the Minimum Spanning Tree.
@@ -227,12 +236,14 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		mst = new LinkedList<>();
 		wmst = 0;
 		
-		PriorityQueue<Edge> q = new PriorityQueue<>();
+		PriorityQueue<Edge> q = new PriorityQueue<>(); // PQ of Edges
 		
+		// Starting from the source, adding all edges incident to source
 		for (Edge e : g.incident(s)) {
 			q.add(e);
 		}
 		
+		// Until there is an edge which needs to be processed
 		while (!q.isEmpty()) {
 			Edge e = q.remove();
 			Vertex u = e.fromVertex();
@@ -244,7 +255,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 			get(v).seen = true;
 			get(v).parent = u;
 			wmst += e.getWeight();
-			mst.add(e);
+			mst.add(e); // updating MST edges
 			
 			for (Edge e2 : g.incident(v)) {
 				Vertex w = e2.otherEnd(v);

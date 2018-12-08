@@ -8,9 +8,7 @@ package rsn170330.lp5;
  */
 
 
-import java.util.Comparator;
 import java.util.NoSuchElementException;
-import java.util.PriorityQueue;
 
 public class BinaryHeap<T extends Comparable<? super T>> {
 	Comparable[] pq; // Priority Queue
@@ -48,12 +46,12 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 		if (size == pq.length) {
 			return false;
 		} 
-		else {
-			pq[size] = x; // Adding to the leaf
-			percolateUp(size); // Moving to the appropriate place
-			size++;
-			return true;
-		}
+		// Adding to the leaf
+		pq[size] = x; 
+		// Moving to the appropriate place
+		percolateUp(size); 
+		size++;
+		return true;
 	}
 
 	/**
@@ -75,20 +73,19 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	 * Polls (or removes) the element.
 	 * @return T the element that was removed, null when PQ is empty
 	 */
-	//@SuppressWarnings("unchecked")
 	public T poll() {
 		if (size == 0) {
 			return null;
 		} 
-		else {
-			// The first element which is to be removed
-			Comparable<? super T> temp = pq[0]; 
-			pq[0] = pq[size - 1];
-			size--;
-			// Moving newly added element to appropriate place
-			percolateDown(0); 
-			return (T) temp;
-		}
+		// The first element which is to be removed
+		Comparable<? super T> temp = pq[0]; 
+		pq[0] = pq[size - 1];
+		size--;
+		
+		// Moving newly added element to appropriate place
+		percolateDown(0); 
+		
+		return (T) temp;
 	}
 	
 	// The top element of the heap.
@@ -100,7 +97,6 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	 * Sees the top element of the heap (or head of the queue).
 	 * @return the first element of queue, null if PQ is empty
 	 */
-	//@SuppressWarnings("unchecked")
 	public T peek() {
 		if (0 < size) {
 			return (T) pq[0];
@@ -122,16 +118,15 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	 * 
 	 * @param index the index to be moved up in the heap.
 	 */
-	//@SuppressWarnings("unchecked")
 	void percolateUp(int index) {
 		Comparable<? super T> x = pq[index];
 		
 		//pq[index] may violate heap order with parent***
-		while (index > 0 && (pq[parent(index)].compareTo(x) > 0)) {
-			pq[index] = pq[parent(index)];
+		while (index > 0 && (compare(pq[parent(index)], x) > 0)) {
+			move(index, pq[parent(index)]); // pq[index] = pq[parent(index)];
 			index = parent(index);
-		}		
-		pq[index] = x;
+		}
+		move(index, x); // pq[index] = x;
 	}
 
 	/**
@@ -139,22 +134,22 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	 * 
 	 * @param index the index to be moved down in the heap.
 	 */
-	//@SuppressWarnings("unchecked")
 	void percolateDown(int index) {
 		Comparable<? super T> x = pq[index];
 		int c = leftChild(index); // (2 * index) + 1;
 		
 		// pq[i] may violate heap order with children***
 		while (c <= size - 1) {
-			if (c < size - 1 && (pq[c].compareTo(pq[c + 1]) > 0))
-				c = c + 1;
-			if (x.compareTo((T) pq[c]) <= 0)
-				break;
-			pq[index] = pq[c];
+			
+			if (c < (size - 1) && (compare(pq[c], pq[c + 1]) > 0)) { c++; }
+			
+			if (compare(x, pq[c]) <= 0) { break; }
+			
+			move(index, pq[c]); // pq[index] = pq[c];
 			index = c;
 			c = leftChild(index); // 2 * index + 1;
 		}
-		pq[index] = x;
+		move(index, x); // pq[index] = x;
 	}
 	
 	/**
@@ -166,13 +161,13 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 		pq[dest] = x;
 	}
 	
-	// why?
+	// 
 	int compare(Comparable a, Comparable b) {
 		return ((T) a).compareTo((T) b);
 	}
 
 	/** 
-	 * Create a heap. 
+	 * Create a heap. Bottom-up [RT: O(n)]
 	 * Precondition: none. 
 	 */
 	void buildHeap() {
@@ -205,11 +200,16 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	}
 
 	public interface Index {
+		
 		public void putIndex(int index);
 
 		public int getIndex();
 	}
-
+	
+	/**
+	 * For Prim3 and Dijkstra's Algorithms. 
+	 * Specialization of Binary Heaps applied on only Comparable objects.
+	 */
 	public static class IndexedHeap<T extends Index & Comparable<? super T>> extends BinaryHeap<T> {
 		/** Build a priority queue with a given array */
 		IndexedHeap(int capacity) {
@@ -218,12 +218,17 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 
 		/** restore heap order property after the priority of x has decreased */
 		void decreaseKey(T x) {
-			
+			int thisIndex = x.getIndex();
+			percolateUp(thisIndex);
 		}
 
 		@Override
 		void move(int i, Comparable x) {
 			super.move(i, x);
+			
+			// updating the index after moving
+			T xImage = (T) x; 
+			xImage.putIndex(i);
 		}
 	}
 
