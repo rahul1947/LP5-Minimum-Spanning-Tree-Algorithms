@@ -11,9 +11,14 @@ import rbk.Graph.Factory;
 import rbk.Graph.Timer;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.List;
+import java.util.Map;
 import java.util.LinkedList;
 import java.io.File;
 
@@ -30,7 +35,9 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		boolean seen;
 		Vertex parent;
 		int distance;
+		
 		Vertex vertex;
+		int name; // prim2: name of the edge reaching to this MSTVertex
 		
 		int thisIndex; // prim3: index of the node in the Priority Queue
 		
@@ -65,7 +72,8 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		public int getIndex() {
 			return thisIndex;
 		}
-
+		
+		// prim2: more the distance -> lesser the priority 
 		public int compareTo(MSTVertex other) {
 			if (other == null || this.distance > other.distance) {
 				return 1;
@@ -193,6 +201,8 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		mst = new LinkedList<>();
 		wmst = 0;
 		PriorityQueue<MSTVertex> q = new PriorityQueue<>();
+		Map<Integer, Edge> edgeMap = new HashMap<>(); 
+		
 		
 		for (Vertex u : g) {
 			get(u).seen = false;
@@ -203,24 +213,49 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		q.add(get(s));
 		
 		while (!q.isEmpty()) {
+/**
+ * Every Vertex u is the main reference point for all MSTVertex copies.
+ * As every copy of MSTVertex made out of Vertex u, stores reference to u in 
+ * it's attribute vertex.
+ * 
+ * So, whenever we add a MSTVertex copy of v, we create a new MSTVertex(v),
+ * update it's distance and parent (which differs for its similar copies made
+ * from Vertex v). This avoids concurrent modification of similar MSTVertex.
+ * 
+ * In short, for each Vertex v, we have it's main MSTVertex copy as get(v),
+ * and might have new MSTVertex(v) copies stored in the Priority Queue q, 
+ * with different distance and parent values. 
+ */
 			MSTVertex u = q.remove();
-			if (!u.seen) {
-				u.seen = true;
+			Vertex uOriginal = u.vertex; 
+			
+			// NOTE: get(uImage) != u***
+			if (!get(uOriginal).seen) {
+				//u.seen = true;
+				// Only get(u) is responsible for 'seen'ness
+				get(uOriginal).seen = true; 
 				wmst += u.distance;
-				Vertex uImage = u.vertex;
 				
-				for (Edge e : g.incident(uImage)) {
-					Vertex v = e.otherEnd(uImage);
+				// add the edge to MST if it's parent exists
+				if (u.parent != null) { mst.add(edgeMap.get(u.name)); }
+				
+				for (Edge e : g.incident(uOriginal)) {
+					Vertex v = e.otherEnd(uOriginal);
 					
 					if (!get(v).seen && e.getWeight() < get(v).distance) {
-						get(v).distance = e.getWeight();
-						get(v).parent = uImage;
-						q.add(get(v));
+						MSTVertex vImage = new MSTVertex(v);
+						vImage.distance = e.getWeight();
+						vImage.parent = uOriginal;
+						
+						// Storing unique name of the edge in the vImage
+						vImage.name = e.getName();
+						edgeMap.put(vImage.name, e); // each new Copy of 
+						// MSTVertex(v) knows about the edge reaching to it.
+						q.add(vImage);
 					}
 				}
 			}
 		}
-		
 		return wmst;
 	}
 	
