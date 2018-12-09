@@ -11,11 +11,9 @@ import rbk.Graph.Factory;
 import rbk.Graph.Timer;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.List;
-import java.util.Map;
 import java.util.LinkedList;
 import java.io.File;
 
@@ -53,32 +51,42 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		// Prim's Algorithm - Take 2-3:
 		int distance; // distance this MSTVertex from the tree with smallest edge
 		Vertex vertex; // reference to the original Vertex
-		
-		// Prim's Algorithm - Take 2:
-		int name; // name of the edge reaching to this MSTVertex
-		
+		Edge incidentEdge; // Edge reaching out to this MSTVertex
+
 		// Prim's Algorithm - Take 3:
 		int primIndex; // Index of the MSTVertex in the Indexed Heap
-		Edge incidentEdge; // Edge reaching out to this MSTVertex
 		
 		// Kruskal's Algorithm: 
 		MSTVertex representative; // representative of this MSTVertex 
-		int rank; // Only union() uses rank. 
-		// And only rank of representative change.
+		int rank; // Only union uses rank. 
+		// And only rank of representative changes.
 		
 		MSTVertex(Vertex u) {
 			seen = false;
 			parent = null;
-
+			
 			distance = Integer.MAX_VALUE;
 			vertex = u;
+			incidentEdge = null;
+			
+			primIndex = 0;
 			
 			representative = null;
-			incidentEdge = null;
+			rank = 0;
 		}
 
 		MSTVertex(MSTVertex u) { // for prim2
+			seen = u.seen;
+			parent = u.parent;
 			
+			distance = u.distance;
+			vertex = u.vertex;
+			incidentEdge = u.incidentEdge;
+			
+			primIndex = u.primIndex;
+			
+			representative = u.representative;
+			rank = u.rank;
 		}
 		
 		// for Kruskal's
@@ -88,12 +96,12 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 			return new MSTVertex(u);
 		}
 		
-		// prim3
+		// Prims's Algorithm - Take 3:
 		public void putIndex(int index) {
 			primIndex = index;
 		}
 		
-		// prim3
+		// Prims's Algorithm - Take 3:
 		public int getIndex() {
 			return primIndex;
 		}
@@ -166,7 +174,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		Arrays.sort(edgeArray); // sort edges by weight
 		
 		for (Edge e : edgeArray) {
-			// get out of the loop, once you've added (N-1) Edges 
+			// Get out of the loop, once you've added (N-1) Edges 
 			if (count == (N-1)) { break; } // DO NOT CHANGE
 
 			MSTVertex u = get(e.fromVertex());
@@ -180,7 +188,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 				wmst += e.getWeight();
 				ru.union(rv);
 				mst.add(e); // adding to the MST*
-				count++;	
+				count++; 
 			}
 		}
 		return wmst;
@@ -192,12 +200,13 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	 * 
 	 * @param s source vertex
 	 * @return the total weight of the Minimum Spanning Tree.
-	 * @throws Exception
+	 * @throws Exception Full/Empty IndexedHeap exceptions
 	 */
 	public long prim3(Vertex s) throws Exception {
 		algorithm = "indexed heaps";
 		IndexedHeap<MSTVertex> q = new IndexedHeap<>(g.size());
 		
+		// Initialization
 		for (Vertex u : g) {
 			get(u).seen = false;
 			get(u).parent = null;
@@ -211,16 +220,17 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		for (Vertex u : g) { q.add(get(u)); }
 		
 		while (!q.isEmpty()) {
-			// Do we actually need this optimization here? NO 
-			// get out of the loop, once you've added (N-1) Edges 
+			// Do we really need this optimization here? NO 
+			// Get out of the loop, once you've added (N-1) Edges 
 			if (count == (N-1)) { break; } // DO NOT CHANGE
 
-			MSTVertex u = q.remove();
-			Vertex uOriginal = u.vertex;
+			MSTVertex u = q.remove(); // MSTVertex
+			Vertex uOriginal = u.vertex; // normal Vertex
 			
-			u.seen =  true;
+			u.seen = true;
 			wmst += u.distance; 
 			
+			// Adding edge to the MST, incrementing the count
 			if (u.parent != null) { mst.add(u.incidentEdge); count++; }
 			
 			for (Edge e : g.incident(uOriginal)) {
@@ -229,11 +239,10 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 				if (!get(v).seen && (e.getWeight() < get(v).distance)) {
 					get(v).distance = e.getWeight();
 					get(v).parent = uOriginal; 
-					get(v).incidentEdge = e;
-					q.decreaseKey(get(v)); 
+					get(v).incidentEdge = e; // edge reaching out to MSTVertex get(v) 
+					q.decreaseKey(get(v)); // percolateUp(MSTVertex v), if needed
 				}
 			}
-			
 		}
 		return wmst;
 	}
@@ -249,65 +258,62 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	public long prim2(Vertex s) {
 		algorithm = "PriorityQueue<Vertex>";
 		PriorityQueue<MSTVertex> q = new PriorityQueue<>();
-		Map<Integer, Edge> edgeMap = new HashMap<>(); 
 		
+		// Initialization:
 		for (Vertex u : g) {
 			get(u).seen = false;
 			get(u).parent = null;
 			get(u).distance = Integer.MAX_VALUE;
 		}
 		get(s).distance = 0;
-		q.add(get(s));
+		q.add(get(s)); // adding the source to the PriorityQueue q
 		
 		while (!q.isEmpty()) {
-			// get out of the loop, once you've added (N-1) Edges
+			// Get out of the loop, once you've added (N-1) Edges
 			if (count == (N-1)) { break; } // DO NOT CHANGE
 			
-			MSTVertex u = q.remove();
-			Vertex uOriginal = u.vertex; 
+			MSTVertex u = q.remove(); // MSTVertex copy 
+			Vertex uOriginal = u.vertex; // normal Vertex 
 			
-			// NOTE: get(uOriginal) != u***
+			// NOTE: get(uOriginal) != u ***
 			if (!get(uOriginal).seen) {
 				// Only get(u) is responsible for 'seen'ness
 				get(uOriginal).seen = true; 
 				wmst += u.distance;
 				
 				// add the edge to MST if it's parent exists
-				if (u.parent != null) { mst.add(edgeMap.get(u.name)); count++; }
-				
+				if (u.parent != null) { mst.add(u.incidentEdge); count++; }
 				
 				for (Edge e : g.incident(uOriginal)) {
 					Vertex v = e.otherEnd(uOriginal);
 					
 					if (!get(v).seen && e.getWeight() < get(v).distance) {
 						// vImage: copy of Vertex v to be added in Priority Queue
-						MSTVertex vImage = new MSTVertex(v); 
+						MSTVertex vImage = new MSTVertex(get(v)); 
+						// or MSTVertex vImage = new MSTVertex(v); // makes no difference
 						vImage.distance = e.getWeight();
 						vImage.parent = uOriginal;
 						
-						// Storing unique name of the edge in the vImage
-						vImage.name = e.getName();
-						edgeMap.put(vImage.name, e); // each new Copy of 
-						// MSTVertex(v) knows about the edge reaching to it.
+						vImage.incidentEdge = e; // edge reaching out to MSTVertex get(v) 
 						q.add(vImage);
 					}
 				}	
 			}
 		}
 		return wmst;
-/**
- * Every Vertex u is the main reference point for all MSTVertex copies.
- * As every copy of MSTVertex made out of Vertex u, stores reference to u in 
- * it's attribute vertex.
- * 
- * So, whenever we add a MSTVertex copy of v, we create a new MSTVertex(v),
- * update it's distance and parent (which differs for its similar copies made
- * from Vertex v). This avoids concurrent modification of similar MSTVertex.
- * 
- * In short, for each original Vertex v, we've it's main MSTVertex copy as get(v),
- * and might have new MSTVertex(v) copies stored in the Priority Queue q, 
- * with different distance and parent values. 
- */
+	/**
+	 * Every Vertex u is the main reference point for all MSTVertex copies of u.
+	 * As every copy of MSTVertex made out of Vertex u, stores reference to u in 
+	 * it's attribute vertex.
+	 * 
+	 * So, whenever we add a MSTVertex copy of Vertex v, we create a new MSTVertex(v),
+	 * update it's distance and parent (which differs for its similar copies made
+	 * from Vertex v). This avoids concurrent modification of similar MSTVertex.
+	 * 
+	 * In short, for each original Vertex v, we've it's main MSTVertex copy as get(v),
+	 * and might have new MSTVertex(v) copies stored in the Priority Queue q, 
+	 * with different distance and parent values. 
+	 */
 	}
 	
 	/**
@@ -323,8 +329,8 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		PriorityQueue<Edge> q = new PriorityQueue<>(); // PQ of Edges
 		
 		for(Vertex u : g) {
-			get(u).seen=false;
-			get(u).parent=null;
+			get(u).seen = false;
+			get(u).parent = null;
 		}
 		get(s).seen = true;
 		
@@ -333,25 +339,29 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		
 		// Until there is an edge which needs to be processed
 		while (!q.isEmpty()) {
-			// get out of the loop, once you've added (N-1) Edges 
+			// Get out of the loop, once you've added (N-1) Edges 
 			if (count == (N-1)) { break; } // DO NOT CHANGE
 			
 			Edge e = q.remove();
 			Vertex u = e.fromVertex();
+			// u needs to be always seen
 			Vertex v = (get(u).seen)? e.otherEnd(u) : u; 
 			
+			// When v is also seen, keep removing the edges
 			if (get(v).seen) { continue; }
 
 			get(v).seen = true;
 			get(v).parent = u;
+			
 			wmst += e.getWeight();
 			mst.add(e); // updating MST edges
 			count++;
 			
 			for (Edge e2 : g.incident(v)) {
-				Vertex w = e2.otherEnd(v);
+				Vertex w = e2.otherEnd(v); // subgraph: (u)---(v)---(w)
+				
 				if (!get(w).seen) {
-					q.add(e2);
+					q.add(e2); // When edge (v)---(w) is not visited
 				}
 			}
 		}
@@ -400,11 +410,10 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		System.out.println(timer.end());
 		
 		//System.out.println("Count: " + m.count);
-		//System.out.println("Minimum Spanning Tree: " + m.algorithm);
-		/*
+		System.out.println("Minimum Spanning Tree: " + m.algorithm);
 		for (Edge e : m.mst) {
 			System.out.println(e.toString());
 		}
-		*/
+		
 	}
 }
