@@ -34,7 +34,7 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 		if (!result) {
 			throw new Exception("Queue is full.\n");
 		}
-		return true;
+		return result;
 	}
 	
 	/**
@@ -43,11 +43,12 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	 * @return isOffered? true when added, else false
 	 */
 	public boolean offer(T x) {
+		// can resize() pq here:
 		if (size == pq.length) {
 			return false;
 		} 
 		// Adding to the leaf
-		pq[size] = x; 
+		move(size, x); // pq[size] = x; 
 		// Moving to the appropriate place
 		percolateUp(size); 
 		size++;
@@ -78,14 +79,13 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 			return null;
 		} 
 		// The first element which is to be removed
-		Comparable<? super T> temp = pq[0]; 
-		pq[0] = pq[size - 1];
-		size--;
+		Comparable<? super T> min = min(); 
+		move(0, pq[--size]); // pq[0] = pq[--size];
 		
 		// Moving newly added element to appropriate place
 		percolateDown(0); 
 		
-		return (T) temp;
+		return (T) min;
 	}
 	
 	// The top element of the heap.
@@ -122,7 +122,7 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 		Comparable<? super T> x = pq[index];
 		
 		//pq[index] may violate heap order with parent***
-		while (index > 0 && (compare(pq[parent(index)], x) > 0)) {
+		while (0 < index && (compare(x, pq[parent(index)]) < 0)) {
 			move(index, pq[parent(index)]); // pq[index] = pq[parent(index)];
 			index = parent(index);
 		}
@@ -140,7 +140,7 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 		
 		// pq[i] may violate heap order with children***
 		while (c <= size - 1) {
-			
+			// right child has higher priority
 			if (c < (size - 1) && (compare(pq[c], pq[c + 1]) > 0)) { c++; }
 			
 			if (compare(x, pq[c]) <= 0) { break; }
