@@ -1,5 +1,14 @@
 package rsn170330.lp5;
 
+/**
+ * CS 5V81.001: Implementation of Data Structures and Algorithms 
+ * Long Project LP5: Minimum Spanning Tree Algorithms
+ * Team: LP101
+ * @author Rahul Nalawade (rsn170330)
+ * @author Prateek Sarna (pxs180012)
+ * @author Bhavish Khanna Narayanan (bxn170002)
+ */
+
 import rsn170330.lp5.BinaryHeap.Index;
 import rsn170330.lp5.BinaryHeap.IndexedHeap;
 
@@ -42,7 +51,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		N = g.size();
 	}
 	
-	/** Stores the characteristics of a special vertex in the graph. */
+	// Stores the characteristics of a special vertex in the graph. 
 	public static class MSTVertex implements Index, Comparable<MSTVertex>, Factory {
 		// Prim's Algorithm - Take 1-3:
 		boolean seen; // to see if this MSTVertex has been visited or not.
@@ -61,6 +70,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		int rank; // Only union uses rank. 
 		// And only rank of representative changes.
 		
+		// Constructing MSTVertex out of a Vertex
 		MSTVertex(Vertex u) {
 			seen = false;
 			parent = null;
@@ -74,8 +84,9 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 			representative = null;
 			rank = 0;
 		}
-
-		MSTVertex(MSTVertex u) { // for prim2
+		
+		// Constructing MSTVertex out of a MSTVertex, used for Prim2
+		MSTVertex(MSTVertex u) {
 			seen = u.seen;
 			parent = u.parent;
 			
@@ -367,7 +378,13 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		}
 		return wmst;
 	}
-
+	
+	/**
+	 * Given a graph g, and a source s, calls MST algorithm based on choice.
+	 * 
+	 * @return the weight of MST
+	 * @throws Exception Empty/ Full Queue exceptions
+	 */
 	public static MST mst(Graph g, Vertex s, int choice) throws Exception {
 		MST m = new MST(g);
 		switch (choice) {
@@ -410,10 +427,11 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		System.out.println(timer.end());
 		
 		//System.out.println("Count: " + m.count);
+		/*
 		System.out.println("Minimum Spanning Tree: " + m.algorithm);
 		for (Edge e : m.mst) {
 			System.out.println(e.toString());
 		}
-		
+		*/
 	}
 }

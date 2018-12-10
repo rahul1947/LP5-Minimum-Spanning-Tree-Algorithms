@@ -5,8 +5,9 @@ package rsn170330.lp5;
  * Long Project LP5: Minimum Spanning Tree Algorithms
  * Team: LP101
  * @author Rahul Nalawade (rsn170330)
+ * @author Prateek Sarna (pxs180012)
+ * @author Bhavish Khanna Narayanan (bxn170002)
  */
-
 
 import java.util.NoSuchElementException;
 
@@ -26,7 +27,7 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	/**
 	 * Add element to the priority queue, throw exception if it is full
 	 * @param x the element to be added
-	 * @throws Exception when pq is full
+	 * @throws Exception when PQ is full
 	 */
 	public boolean add(T x) throws Exception {
 		boolean result = offer(x);
@@ -38,12 +39,12 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	}
 	
 	/**
-	 * Offer(add) a number x, return false if pq is full
+	 * Offer(add) a number x, return false if PQ is full
 	 * @param x the number to be offered
 	 * @return isOffered? true when added, else false
 	 */
 	public boolean offer(T x) {
-		// can resize() pq here:
+		// can resize() PQ here:
 		if (size == pq.length) {
 			return false;
 		} 
@@ -65,9 +66,8 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 		
 		if (result == null) {
 			throw new NoSuchElementException("Priority queue is empty.\n");
-		} else {
-			return result;
 		}
+		return result;
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	}
 
 	/**
-	 * Sees the top element of the heap (or head of the queue).
+	 * Returns the top element of the heap (or head of the queue).
 	 * @return the first element of queue, null if PQ is empty
 	 */
 	public T peek() {
@@ -103,19 +103,19 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 		}
 		return null;
 	}
-
+	
+	// index of parent
 	int parent(int i) {
 		return (i - 1) / 2;
 	}
-
+	
+	// index of left child
 	int leftChild(int i) {
 		return 2 * i + 1;
 	}
 
-	
 	/**
 	 * Move the element[index] up in the heap, at it's appropriate place.
-	 * 
 	 * @param index the index to be moved up in the heap.
 	 */
 	void percolateUp(int index) {
@@ -131,7 +131,6 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 
 	/**
 	 * Move the element[index] down in the heap, at it's appropriate place. 
-	 * 
 	 * @param index the index to be moved down in the heap.
 	 */
 	void percolateDown(int index) {
@@ -161,7 +160,7 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 		pq[dest] = x;
 	}
 	
-	// 
+	// helper method 'avoiding' many class cast exceptions
 	int compare(Comparable a, Comparable b) {
 		return ((T) a).compareTo((T) b);
 	}
@@ -175,12 +174,13 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 			percolateDown(i);
 		}
 	}
-
+	
+	// checks if the PQ is empty.
 	public boolean isEmpty() {
 		return size() == 0;
 	}
 	
-	// no if elements in the heap.
+	// number of elements in the heap.
 	public int size() {
 		return size;
 	}
@@ -208,15 +208,15 @@ public class BinaryHeap<T extends Comparable<? super T>> {
 	
 	/**
 	 * For Prim3 and Dijkstra's Algorithms. 
-	 * Specialization of Binary Heaps applied on only Comparable objects.
+	 * Specialization of Binary Heaps applied only on Comparable objects.
 	 */
 	public static class IndexedHeap<T extends Index & Comparable<? super T>> extends BinaryHeap<T> {
-		/** Build a priority queue with a given array */
+		// Build a priority queue with a given array 
 		IndexedHeap(int capacity) {
 			super(capacity);
 		}
 
-		/** restore heap order property after the priority of x has decreased */
+		// restore heap order property after the priority of x has decreased
 		void decreaseKey(T x) {
 			int thisIndex = x.getIndex();
 			percolateUp(thisIndex);
