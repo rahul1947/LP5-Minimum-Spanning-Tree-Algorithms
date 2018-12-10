@@ -32,14 +32,14 @@ NOTE: the current directory must contain rbk directory with rbk/Graph.java
    encounter full and empty queue conditions respectively. But, offer(x), 
    and poll() silently returns false for the above conditions. 
    
-2. In BinaryHeap - we could have used resize() as we try to add an element to
-   fully occupied queue. But, as we are dealing with fixed graph, the 
+2. In BinaryHeap - we could have used resize() as we try to add an element 
+   to fully occupied queue. But, as we are dealing with fixed graph, the 
    resize() is never being called.
    
 3. In MST Algorithms - the early exit optimization is applied but, when 
    tested it appears that Prim3 doesn't need such optimization. 
-   Note that this optimization only helps in saving computations after you add 
-   the last (n-1)th edge to the MST. 
+   Note that this optimization only helps in saving computations after you 
+   add the last (n-1)th edge to the MST. 
 
 4. For Prim's Algorithm - Take 2:
    We may not need to use the constructor MSTVertex(MSTVertex u).
@@ -54,7 +54,7 @@ NOTE: the current directory must contain rbk directory with rbk/Graph.java
    whereas, get(v) has the information about 'seen'ness of all MSTVertices 
    made out of v. 
    
- 5. For Prim2 and Prim3, we are storing the information about the edge 
+5. For Prim2 and Prim3, we are storing the information about the edge 
    which reaches out to this MSTVertex. It is used to form mst<Edge>.
      
 ----------------------------------------------------------------------------
