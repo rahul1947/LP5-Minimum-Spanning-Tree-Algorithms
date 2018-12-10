@@ -11,6 +11,15 @@ package rsn170330.lp5;
 
 import java.util.NoSuchElementException;
 
+/**
+ * Implementing Priority Queue (as Binary Heaps) using Arrays.
+ * NOTE: add(x) and remove() returns true for successful 
+ * operations, else throws an Exception.
+ * 
+ * IndexedHeap is extension of Binary Heap with decreaseKey() 
+ * implementation thereby extending Index interface to update
+ * indices appropriately. 
+ */
 public class BinaryHeap<T extends Comparable<? super T>> {
 	Comparable[] pq; // Priority Queue
 	int capacity; // maximum size of Priority Queue
