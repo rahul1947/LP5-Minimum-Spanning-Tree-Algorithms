@@ -89,7 +89,9 @@ NOTE:
 - Refer lp5-script-results.txt as obtained from 
   $ ./lp5-script.sh > lp5-script-results.txt
 
-- All the Graphs runs perfectly producing correct results for MST . 
+- All the Graphs runs perfectly producing correct results. To allocate 
+  sufficient memory for the lp5-t07.txt test file, you can use - 
+  $ java -Xss512m -Xms2g rsn170330.MST lp5-test/lp5-t07.txt 1 
 
 - Time and Memory might change, as you run the test the program on a 
   different system, but they could be comparable to the above values.
