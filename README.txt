@@ -1,13 +1,16 @@
-# LP5-Minimum-Spanning-Tree-Algorithms
+# Long Project LP5: Minimum Spanning Tree Algorithms
 
-/**
- * CS 5V81.001: Implementation of Data Structures and Algorithms 
- * Long Project LP5: Minimum Spanning Tree Algorithms
- * Team: LP101
- * @author Rahul Nalawade (rsn170330)
- * @author Prateek Sarna (pxs180012)
- * @author Bhavish Khanna Narayanan (bxn170002)
- */
+# Team: LP101 
+ * Rahul Nalawade (https://github.com/rahul1947) 
+   rsn170330@utdallas.edu 
+ * Prateek Sarna (https://github.com/prateek5795)  
+   pxs180012@utdallas.edu 
+ * Bhavish Khanna Narayanan (https://github.com/bhavish14) 
+   bxn170002@utdallas.edu 
+ 
+# End Date: 
+ * Sunday, December 09, 2018
+_______________________________________________________________________________
 
 BinaryHeap.java: 
    Implemented BinaryHeap and its nested class IndexedHeap.
@@ -16,18 +19,10 @@ MST.java:
    Implemented the three versions of Prim's algorithm discussed in class, 
    and Kruskal's algorithm. 
 
-1. Extract the rsn170330.zip 
+_______________________________________________________________________________
 
-2. Compile: 
-   $javac rsn170330/*.java
+# OBSERVATIONS:
 
-3. Run: 
-   $java rsn170330.MST mst-data/mst-5-6-19.txt 1
-
-NOTE: the current directory must contain rbk directory with rbk/Graph.java
-
-----------------------------------------------------------------------------
-# OBSERVATIONS
 1. In BinaryHeap - add(x), and remove() throws exception when they 
    encounter full and empty queue conditions respectively. But, offer(x), 
    and poll() silently returns false for the above conditions. 
@@ -56,56 +51,37 @@ NOTE: the current directory must contain rbk directory with rbk/Graph.java
    
 5. For Prim2 and Prim3, we are storing the information about the edge 
    which reaches out to this MSTVertex. It is used to form mst<Edge>.
-     
-----------------------------------------------------------------------------
-# RESULTS
-+------------------------------------------------------------------------+
-|                         |          Prim's Algorithm - Take 1           |
-| File                    |----------------------------------------------|
-|                         | Output   |  Time(mSec)  | Memory (used/avail)|
-|------------------------------------------------------------------------|
-| mst-5-6-19.txt          | 19       | 2            | 1 MB / 117 MB      |
-|------------------------------------------------------------------------|
-| mst-50-140-84950.txt    | 84950    | 4            | 1 MB / 117 MB      |
-|------------------------------------------------------------------------|
-| mst-10k-30k-1085305.txt | 1085305  | 28           | 9 MB / 147 MB      |
-+------------------------------------------------------------------------+
+_______________________________________________________________________________
 
-+------------------------------------------------------------------------+
-|                         |          Prim's Algorithm - Take 2           |
-| File                    |----------------------------------------------|
-|                         | Output   |  Time(mSec)  | Memory (used/avail)|
-|------------------------------------------------------------------------|
-| mst-5-6-19.txt          | 19       | 2            | 1 MB / 117 MB      |
-|------------------------------------------------------------------------|
-| mst-50-140-84950.txt    | 84950    | 3            | 1 MB / 117 MB      |
-|------------------------------------------------------------------------|
-| mst-10k-30k-1085305.txt | 1085305  | 32           | 11 MB / 147 MB     |
-+------------------------------------------------------------------------+
+# RESULTS:
 
-+------------------------------------------------------------------------+
-|                         |          Prim's Algorithm - Take 3           |
-| File                    |----------------------------------------------|
-|                         | Output   |  Time(mSec)  | Memory (used/avail)|
-|------------------------------------------------------------------------|
-| mst-5-6-19.txt          | 19       | 3            | 1 MB / 117 MB      |
-|------------------------------------------------------------------------|
-| mst-50-140-84950.txt    | 84950    | 3            | 1 MB / 117 MB      |
-|------------------------------------------------------------------------|
-| mst-10k-30k-1085305.txt | 1085305  | 34           | 12 MB / 147 MB     |
-+------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------------+
+|             |                       Prim's Algorithm                          |      Kruskal's      |
+|             |-----------------------------------------------------------------|      Algorithm      |
+| Test        |        Take 1       |        Take 2       |        Take 3       |                     |
+| Files       |---------------------|---------------------|---------------------|---------------------|
+|             |  Time |   Memory    |  Time |   Memory    |  Time |   Memory    |  Time |   Memory    |
+|-------------|-------|-------------|-------|-------------|-------|-------------|-------|-------------|
+| lp5-t01.txt |     2 |     1 / 117 |     2 |     1 / 117 |     2 |     1 / 117 |     1 |     1 / 117 |
+|-------------|-------|-------------|-------|-------------|-------|-------------|-------|-------------|
+| lp5-t02.txt |     3 |     1 / 117 |     3 |     1 / 117 |     3 |     1 / 117 |     3 |     1 / 117 |
+|-------------|-------|-------------|-------|-------------|-------|-------------|-------|-------------|
+| lp5-t03.txt |     5 |     2 / 117 |     4 |     2 / 117 |     5 |     2 / 117 |     4 |     2 / 117 |
+|-------------|-------|-------------|-------|-------------|-------|-------------|-------|-------------|
+| lp5-t04.txt |    29 |     9 / 147 |    31 |    10 / 147 |    37 |    10 / 147 |    43 |    14 / 147 |
+|-------------|-------|-------------|-------|-------------|-------|-------------|-------|-------------|
+| lp5-t05.txt |    20 |    15 / 117 |    19 |    17 / 117 |    12 |    16 / 117 |    26 |    14 / 117 |
+|-------------|-------|-------------|-------|-------------|-------|-------------|-------|-------------|
+| lp5-t06.txt |   133 |   115 / 208 |   129 |   124 / 208 |    69 |   111 / 208 |   133 |   117 / 208 |
+|-------------|-------|-------------|-------|-------------|-------|-------------|-------|-------------|
+| lp5-t07.txt |  7157 |  976 / 2009 | 14847 | 1284 / 2008 |  1697 |  835 / 2009 |  5439 |  929 / 2009 |
++-----------------------------------------------------------------------------------------------------+
 
-+------------------------------------------------------------------------+
-|                         |             Kruskal's Algorithm              |
-| File                    |----------------------------------------------|
-|                         | Output   |  Time(mSec)  | Memory (used/avail)|
-|------------------------------------------------------------------------|
-| mst-5-6-19.txt          | 19       | 2            | 1 MB / 117 MB      |
-|------------------------------------------------------------------------|
-| mst-50-140-84950.txt    | 84950    | 2            | 1 MB / 117 MB      |
-|------------------------------------------------------------------------|
-| mst-10k-30k-1085305.txt | 1085305  | 42           | 14 MB / 147 MB     |
-+------------------------------------------------------------------------+
+Time: in milliSeconds
+Memory: Used / Available in MiBs 
+
+Refer lp5-script-results.txt as obtained from 
+$ ./lp5-script.sh > lp5-script-results.txt
 
 NOTE: 
 - Time and Memory might change, as you run the test the program on a 
@@ -115,7 +91,23 @@ NOTE:
 
 - All necessary results are stored in the result directory for reference.
 
-- These files are not good examples for determining efficiency of Prim3 
-  over Prim1. For sparse graphs like these, Prim1 could beat Prim3, but 
-  when graph grows dense Prim3 could easily beat Prim1.
-  
+- First four files (t01 to t04) are not good examples for determining 
+  efficiency of Prim3 over Prim1. 
+  For sparse graphs like these, Prim1 could beat Prim3, but 
+  when graph grows dense, in case of t07, Prim3 could easily beat Prim1.
+_______________________________________________________________________________
+
+# How to Run: 
+
+1. Extract the rsn170330.zip 
+
+2. Compile: 
+   $javac rsn170330/*.java
+
+3. Run: 
+   $java rsn170330.MST lp5-test/lp5-t04.txt <value>
+   where value can be an integer = {1, 2, 3, 4} corresponding to the
+   Prim1, Prim2, Prim3, Kruskal's Algorithm respectively.
+
+NOTE: the current directory must contain rbk directory with rbk/Graph.java
+_______________________________________________________________________________

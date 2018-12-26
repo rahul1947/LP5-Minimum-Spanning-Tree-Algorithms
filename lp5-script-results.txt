@@ -1,0 +1,118 @@
+Prim1: PriorityQueue<Edge>
+19
+Time: 2 msec.
+Memory: 1 MB / 117 MB.
+Prim2: PriorityQueue<Vertex>
+19
+Time: 2 msec.
+Memory: 1 MB / 117 MB.
+Prim3: IndexedHeap<Vertex>
+19
+Time: 2 msec.
+Memory: 1 MB / 117 MB.
+Kruskal's Algorithm
+19
+Time: 1 msec.
+Memory: 1 MB / 117 MB.
+
+Prim1: PriorityQueue<Edge>
+84950
+Time: 3 msec.
+Memory: 1 MB / 117 MB.
+Prim2: PriorityQueue<Vertex>
+84950
+Time: 3 msec.
+Memory: 1 MB / 117 MB.
+Prim3: IndexedHeap<Vertex>
+84950
+Time: 3 msec.
+Memory: 1 MB / 117 MB.
+Kruskal's Algorithm
+84950
+Time: 3 msec.
+Memory: 1 MB / 117 MB.
+
+Prim1: PriorityQueue<Edge>
+110419
+Time: 5 msec.
+Memory: 2 MB / 117 MB.
+Prim2: PriorityQueue<Vertex>
+110419
+Time: 4 msec.
+Memory: 2 MB / 117 MB.
+Prim3: IndexedHeap<Vertex>
+110419
+Time: 5 msec.
+Memory: 2 MB / 117 MB.
+Kruskal's Algorithm
+110419
+Time: 4 msec.
+Memory: 2 MB / 117 MB.
+
+Prim1: PriorityQueue<Edge>
+1085305
+Time: 29 msec.
+Memory: 9 MB / 147 MB.
+Prim2: PriorityQueue<Vertex>
+1085305
+Time: 31 msec.
+Memory: 10 MB / 147 MB.
+Prim3: IndexedHeap<Vertex>
+1085305
+Time: 37 msec.
+Memory: 10 MB / 147 MB.
+Kruskal's Algorithm
+1085305
+Time: 43 msec.
+Memory: 14 MB / 147 MB.
+
+Prim1: PriorityQueue<Edge>
+13885
+Time: 20 msec.
+Memory: 15 MB / 117 MB.
+Prim2: PriorityQueue<Vertex>
+13885
+Time: 19 msec.
+Memory: 17 MB / 117 MB.
+Prim3: IndexedHeap<Vertex>
+13885
+Time: 12 msec.
+Memory: 16 MB / 117 MB.
+Kruskal's Algorithm
+13885
+Time: 26 msec.
+Memory: 14 MB / 117 MB.
+
+Prim1: PriorityQueue<Edge>
+118867
+Time: 133 msec.
+Memory: 115 MB / 208 MB.
+Prim2: PriorityQueue<Vertex>
+118867
+Time: 129 msec.
+Memory: 124 MB / 208 MB.
+Prim3: IndexedHeap<Vertex>
+118867
+Time: 69 msec.
+Memory: 111 MB / 208 MB.
+Kruskal's Algorithm
+118867
+Time: 133 msec.
+Memory: 117 MB / 208 MB.
+
+Prim1: PriorityQueue<Edge>
+552032
+Time: 7157 msec.
+Memory: 976 MB / 2009 MB.
+Prim2: PriorityQueue<Vertex>
+552032
+Time: 14847 msec.
+Memory: 1284 MB / 2008 MB.
+Prim3: IndexedHeap<Vertex>
+552032
+Time: 1697 msec.
+Memory: 835 MB / 2009 MB.
+Kruskal's Algorithm
+552032
+Time: 5439 msec.
+Memory: 929 MB / 2009 MB.

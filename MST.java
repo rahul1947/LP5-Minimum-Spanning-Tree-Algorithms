@@ -55,7 +55,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	public static class MSTVertex implements Index, Comparable<MSTVertex>, Factory {
 		// Prim's Algorithm - Take 1-3:
 		boolean seen; // to see if this MSTVertex has been visited or not.
-		Vertex parent; // parent of this MSTVertex 
+		Vertex parent; // parent of this MSTVertex. DO WE REALLY NEED IT?
 		
 		// Prim's Algorithm - Take 2-3:
 		int distance; // distance this MSTVertex from the tree with smallest edge
@@ -181,7 +181,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	 * @return the total weight of the Minimum Spanning Tree.
 	 */
 	public long kruskal() {
-		algorithm = "Kruskal";
+		algorithm = "Kruskal's Algorithm";
 		Edge[] edgeArray = g.getEdgeArray();
 		
 		// make singleton component for each vertex having it in its component.
@@ -219,7 +219,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	 * @throws Exception Full/Empty IndexedHeap exceptions
 	 */
 	public long prim3(Vertex s) throws Exception {
-		algorithm = "indexed heaps";
+		algorithm = "Prim3: IndexedHeap<Vertex>";
 		IndexedHeap<MSTVertex> q = new IndexedHeap<>(g.size());
 		
 		// Initialization
@@ -272,7 +272,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	 * @return the total weight of the Minimum Spanning Tree.
 	 */
 	public long prim2(Vertex s) {
-		algorithm = "PriorityQueue<Vertex>";
+		algorithm = "Prim2: PriorityQueue<Vertex>";
 		PriorityQueue<MSTVertex> q = new PriorityQueue<>();
 		
 		// Initialization:
@@ -341,7 +341,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	 * @return the total weight of the Minimum Spanning Tree.
 	 */
 	public long prim1(Vertex s) {
-		algorithm = "PriorityQueue<Edge>";
+		algorithm = "Prim1: PriorityQueue<Edge>";
 		PriorityQueue<Edge> q = new PriorityQueue<>(); // PQ of Edges
 		
 		for(Vertex u : g) {
@@ -393,17 +393,17 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	public static MST mst(Graph g, Vertex s, int choice) throws Exception {
 		MST m = new MST(g);
 		switch (choice) {
-		case 0:
+		case 4:
 			m.kruskal();
 			break;
-		case 1:
-			m.prim1(s);
+		case 3:
+			m.prim3(s);
 			break;
 		case 2:
 			m.prim2(s);
 			break;
 		default:
-			m.prim3(s);
+			m.prim1(s);
 			break;
 		}
 		return m;
@@ -411,7 +411,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 
 	public static void main(String[] args) throws Exception {
 		Scanner in;
-		int choice = 0; // Kruskal
+		int choice = 4; // Kruskal
 		if (args.length == 0 || args[0].equals("-")) {
 			in = new Scanner(System.in);
 		} else {
