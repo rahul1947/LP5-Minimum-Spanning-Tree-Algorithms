@@ -173,10 +173,10 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	 * Kruskal's MST Algorithm using disjoint set data structure 
 	 * with union()-and-find() operations.
 	 * 
-	 * Runtime: O(|E| * log|E| + |E| * @ * |V|).
-	 *    Where @ is inverse of Ackerman's constant (grows extremely slowly that 
+	 * Runtime: O(|E| * log|E| + |E| * A * |V|).
+	 *    Where A is inverse of Ackerman's constant (grows extremely slowly that 
 	 *    it just looks like a single digit constant).
-	 *    So, Runtime is mainly decided by sorting step - |E| * log|E|.
+	 *    So, Runtime is mainly decided by sorting step: |E| * log|E|.
 	 * 
 	 * @return the total weight of the Minimum Spanning Tree.
 	 */

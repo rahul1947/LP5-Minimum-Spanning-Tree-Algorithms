@@ -80,7 +80,7 @@ Graph Size:
   |V| - number of vertices in the graph
   |E| - number of edges in the graph 
 Time: in milliSeconds
-Memory: Used / Available in MiBs 
+Memory: Used / Available in MBs 
 
 NOTE: 
 - The Files are ordered on Graph 'Density' = |E| / |V|, ratio of # edges to 
