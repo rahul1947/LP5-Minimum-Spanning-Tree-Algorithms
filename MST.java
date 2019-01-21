@@ -43,7 +43,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	int count; // for early exit optimization
 	int N; // No of vertices in graph
 
-	MST(Graph g) {
+	public MST(Graph g) {
 		super(g, new MSTVertex((Vertex) null));
 		mst = new LinkedList<>();
 		wmst = 0;
@@ -51,7 +51,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		N = g.size();
 	}
 	
-	// Stores the characteristics of a special vertex in the graph. 
+	// Stores the characteristics of a special vertex in the graph 
 	public static class MSTVertex implements Index, Comparable<MSTVertex>, Factory {
 		// Prim's Algorithm - Take 1-3:
 		boolean seen; // to see if this MSTVertex has been visited or not.
@@ -71,7 +71,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		// And only rank of representative changes.
 		
 		// Constructing MSTVertex out of a Vertex
-		MSTVertex(Vertex u) {
+		public MSTVertex(Vertex u) {
 			seen = false;
 			parent = null;
 			
@@ -86,7 +86,7 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 		}
 		
 		// Constructing MSTVertex out of a MSTVertex, used for Prim2
-		MSTVertex(MSTVertex u) {
+		public MSTVertex(MSTVertex u) {
 			seen = u.seen;
 			parent = u.parent;
 			
@@ -393,17 +393,17 @@ public class MST extends GraphAlgorithm<MST.MSTVertex> {
 	public static MST mst(Graph g, Vertex s, int choice) throws Exception {
 		MST m = new MST(g);
 		switch (choice) {
-		case 4:
-			m.kruskal();
-			break;
-		case 3:
-			m.prim3(s);
+		case 1:
+			m.prim1(s);
 			break;
 		case 2:
 			m.prim2(s);
 			break;
+		case 3:
+			m.prim3(s);
+			break;
 		default:
-			m.prim1(s);
+			m.kruskal();
 			break;
 		}
 		return m;
